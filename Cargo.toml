@@ -3,4 +3,12 @@ name = "parser"
 version = "0.1.0"
 edition = "2024"
 
+[dev-dependencies]
+criterion = "0.8.2"
+
+[[bench]]
+name = "my_benchmark"
+harness = false
+
 [dependencies]
+criterion = "0.8.2"
