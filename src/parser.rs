@@ -64,11 +64,14 @@ pub fn parser() -> Result<(), ParserError> {
         let mut started_with_quote = false;
         let mut started_quote_number: u8 = 0;
         for c in color.chars() {
-            if c.to_string().as_str() == "\"" {
+            let abcd = c.to_string();
+            let c_char = abcd.as_str();
+
+            if c_char == "\"" {
                 started_with_quote = true;
                 started_quote_number += 1;
             }
-            if c.to_string().as_str() == "," && started_with_quote == false {
+            if c_char == "," && started_with_quote == false {
                 if new_line_without_quotes.is_empty() {
                     return Err(ParserError::InvalidCsv);
                 }
@@ -77,8 +80,8 @@ pub fn parser() -> Result<(), ParserError> {
                 new_line_without_quotes = "".to_string();
             } else if started_with_quote == true {
                 if started_quote_number == 1 {
-                    if c.to_string().as_str() != "\"" {
-                        new_line_with_quotes += c.to_string().as_str();
+                    if c_char != "\"" {
+                        new_line_with_quotes += c_char;
                     }
                 }
                 if started_quote_number == 1 && new_line_with_quotes.contains("\n") {
@@ -91,8 +94,8 @@ pub fn parser() -> Result<(), ParserError> {
                     started_with_quote = false;
                 }
             }
-            if c.to_string().as_str() != "," {
-                new_line_without_quotes += c.to_string().as_str();
+            if c_char != "," {
+                new_line_without_quotes += c_char;
             }
         }
 
