@@ -19,34 +19,51 @@ pub fn parser_v2() -> Result<(), ParserError> {
         hex: &'a str,
         rgb: &'a str,
     }
-
+    let mut parsed_data: Vec<Color> = Vec::new();
+    let mut indx = 0;
     for line in &csv_line {
+        if indx == 0 {
+            indx += 1;
+            continue;
+        }
+
         let mut starts_with_quote = false;
         let mut quote_number = 0;
-        let mut index_of_first_quote: usize = 0;
-        let mut index_of_last_quote: usize = 0;
         let mut first_index_assigned = true;
         let mut last_index_assigned = true;
+        let mut total_coma = 0;
+        let mut first_coma_index = 0;
+        let mut second_coma_index = 0;
         for (i, c) in line.chars().enumerate() {
             if c == '"' {
                 starts_with_quote = true;
                 quote_number += 1;
             }
             if quote_number == 1 && starts_with_quote == true && first_index_assigned {
-                index_of_first_quote = i;
                 first_index_assigned = false;
             }
             if quote_number == 2 && starts_with_quote == true && last_index_assigned {
-                index_of_last_quote = i;
                 last_index_assigned = false;
             }
+            if c == ',' {
+                total_coma += 1;
+                if total_coma == 1 {
+                    first_coma_index = i;
+                }
+                if total_coma == 2 {
+                    second_coma_index = i;
+                }
+            }
         }
-        println!(
-            "index of first quote: {}, index of last quote: {}",
-            index_of_first_quote, index_of_last_quote
-        );
+        let color = Color {
+            name: &line[0..first_coma_index],
+            hex: &line[(first_coma_index + 1)..second_coma_index],
+            rgb: &line[(second_coma_index + 1)..],
+        };
+
+        parsed_data.push(color);
     }
 
-    // println!("csv_line: {:#?}", csv_line);
+    println!("parsed_data: {:#?}", parsed_data);
     Ok(())
 }
